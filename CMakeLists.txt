@@ -3,14 +3,7 @@ project(libkeyfinder)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-option(BUILD_STATIC_LIBS "Build library statically" OFF)
-if(BUILD_STATIC_LIBS)
-  set(LIBMODE "STATIC")
-else()
-  set(LIBMODE "SHARED")
-endif()
-
-add_library(keyfinder "${LIBMODE}"
+add_library(keyfinder
   src/audiodata.cpp
   src/chromagram.cpp
   src/chromatransform.cpp
@@ -29,12 +22,17 @@ add_library(keyfinder "${LIBMODE}"
 )
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package(FFTW REQUIRED)
-target_link_libraries(keyfinder PUBLIC FFTW::FFTW)
+find_package(FFTW3 REQUIRED)
+target_link_libraries(keyfinder PUBLIC FFTW3::fftw3)
 target_include_directories(keyfinder PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
 include(GNUInstallDirs)
-install(TARGETS keyfinder DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+install(TARGETS keyfinder
+  ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+)
+
 install(FILES
   src/audiodata.h
   src/chromagram.h
