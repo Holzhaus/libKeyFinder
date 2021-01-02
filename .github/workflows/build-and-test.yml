@@ -15,6 +15,10 @@ jobs:
           - name: macOS 10.15
             os: macos-10.15
             install_dir: ~/libKeyFinder
+          - name: Windows 2019
+            os: windows-2019
+            install_dir: C:\libKeyFinder
+            cmake_extras: -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
@@ -29,9 +33,12 @@ jobs:
     - name: "[macOS] Install FFTW"
       if: startsWith(matrix.os, 'macos')
       run: brew install fftw
+    - name: "[Windows] Install FFTW"
+      if: startsWith(matrix.os, 'windows')
+      run: vcpkg install fftw3
     - name: build
       run: |
-        cmake -DCMAKE_INSTALL_PREFIX=${{ matrix.install_dir }} -S . -B build
+        cmake ${{ matrix.cmake_extras }} -DCMAKE_INSTALL_PREFIX=${{ matrix.install_dir }} -S . -B build
         cmake --build build --parallel 2
         cmake --install build
     - name: run tests
