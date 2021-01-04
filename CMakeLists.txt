@@ -3,7 +3,8 @@ project(libkeyfinder)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-option(BUILD_SHARED_LIBS "Build dynamic library" OFF)
+option(BUILD_SHARED_LIBS "Build dynamic library" ON)
+
 add_library(keyfinder
   src/audiodata.cpp
   src/chromagram.cpp
@@ -26,6 +27,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package(FFTW3 REQUIRED)
 target_link_libraries(keyfinder PUBLIC FFTW3::fftw3)
 target_include_directories(keyfinder PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+if(MSVC AND BUILD_SHARED_LIBS)
+  target_compile_definitions(keyfinder PRIVATE KEYFINDER_DLLEXPORT)
+endif()
 
 #
 # Installation

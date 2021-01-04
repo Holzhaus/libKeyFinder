@@ -22,6 +22,12 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#ifdef KEYFINDER_DLLEXPORT
+#define KEYFINDER_DECLSPEC __declspec(dllexport)
+#else
+#define KEYFINDER_DECLSPEC
+#endif
+
 #include <cmath>
 #include <vector>
 #include <deque>
