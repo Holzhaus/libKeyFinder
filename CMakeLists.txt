@@ -26,6 +26,16 @@ find_package(FFTW3 REQUIRED)
 target_link_libraries(keyfinder PUBLIC FFTW3::fftw3)
 target_include_directories(keyfinder PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
+#
+# Tests
+#
+add_subdirectory(tests)
+enable_testing()
+add_test(NAME KeyFinder COMMAND $<TARGET_FILE:keyfinder-tests>)
+
+#
+# Installation
+#
 include(GNUInstallDirs)
 install(TARGETS keyfinder
   ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
@@ -57,5 +67,3 @@ set(LIBKEYFINDER_VERSION 2.2.3)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libKeyFinder.pc.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/libKeyFinder.pc @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libKeyFinder.pc DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
-
-add_subdirectory(tests)

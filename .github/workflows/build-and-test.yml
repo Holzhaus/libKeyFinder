@@ -26,28 +26,37 @@ jobs:
 
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+    env:
+      BUILDDIR: build
     steps:
     - name: Check out Git repository
       uses: actions/checkout@v2
+
     - name: "[Ubuntu] Install FFTW"
       if: startsWith(matrix.os, 'ubuntu')
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends fftw3-dev
+
     - name: "[macOS] Install FFTW"
       if: startsWith(matrix.os, 'macos')
       run: brew install fftw
+
     - name: "[Windows] Install FFTW"
       if: startsWith(matrix.os, 'windows')
       run: vcpkg install fftw3:x64-windows-static
-    - name: build
+
+    - name: Build
       run: |
-        cmake ${{ matrix.cmake_extras }} -DCMAKE_INSTALL_PREFIX=${{ matrix.install_dir }} -S . -B build
-        cmake --build build  ${{ matrix.cmake_config }} --parallel 2
-        cmake --install build ${{ matrix.cmake_config }}
-    - name: run tests
-      run: build/tests/test
-    - name: upload build artifact
+        cmake ${{ matrix.cmake_extras }} -DCMAKE_INSTALL_PREFIX=${{ matrix.install_dir }} -S . -B ${{ env.BUILDDIR }}
+        cmake --build ${{ env.BUILDDIR }}  ${{ matrix.cmake_config }} --parallel 2
+        cmake --install ${{ env.BUILDDIR }} ${{ matrix.cmake_config }}
+
+    - name: Run Tests
+      run: ctest --verbose ${{ matrix.cmake_config }}
+      working-directory: ${{ env.BUILDDIR }}
+
+    - name: Upload Build Artifact
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.name }} libKeyFinder build
