@@ -66,7 +66,6 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libKeyFinder.pc DESTINATION "${CMAKE_I
 # Tests
 #
 include(CTest)
-enable_testing()
 if(BUILD_TESTING)
   add_subdirectory(tests)
   add_test(NAME KeyFinder COMMAND $<TARGET_FILE:keyfinder-tests>)
