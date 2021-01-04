@@ -45,7 +45,7 @@ jobs:
       run: vcpkg install fftw3:x64-windows-static
     - name: Build
       run: |
-        cmake ${{ matrix.cmake_extras }} -DCMAKE_INSTALL_PREFIX=${{ matrix.install_dir }} -S . -B build
+        cmake ${{ matrix.cmake_extras }} -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=${{ matrix.install_dir }} -S . -B build
         cmake ${{ matrix.cmake_config }} --build build --parallel 2
         cmake ${{ matrix.cmake_config }} --install build
     - name: Run Tests
